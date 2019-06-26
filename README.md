@@ -1,0 +1,2 @@
+# pySpinWexamples
+Examples for pySpinW
