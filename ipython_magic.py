@@ -26,28 +26,25 @@ class MatlabMagic(Magics):
 
     @line_magic
     def showPlot(self, line):
-        self.m.interface.set(0., 'defaultfigurevisible', 'on', nargout=0)
-        self.m.interface.set(0., 'defaultfigurepaperpositionmode', 'manual', nargout=0)
+        self.m.interface.call('set',(0., 'defaultfigurevisible', 'on'), nargout=0)
+        self.m.interface.call('set',(0., 'defaultfigurepaperpositionmode', 'manual'), nargout=0)
         # TODO make these parameters. Quick and dirty test....
         width = 800
         height = 600
         resolution = 150
-        self.m.interface.set(0., 'defaultfigurepaperposition',
-        self.m.pyMatlab.double([0, 0, width / resolution, height / resolution]), nargout=0)
-        self.m.interface.set(0., 'defaultfigurepaperunits', 'inches', nargout=0)
+        self.m.interface.call('set',(0., 'defaultfigurepaperposition',
+        self.m.pyMatlab.double([0, 0, width / resolution, height / resolution])), nargout=0)
+        self.m.interface.call('set',(0., 'defaultfigurepaperunits', 'inches'), nargout=0)
         format = 'png'
-        nfig = len(self.m.interface.get(0., "children"))
+        nfig = len(self.m.interface.call('get',(0., "children")))
         if nfig:
             with TemporaryDirectory() as tmpdir:
                 try:
-                    self.m.interface.eval(
-                        "arrayfun("
-                        "@(h, i) print(h, sprintf('{}/%i', i), '-d{}', '-r{}'),"
-                        "get(0, 'children'), (1:{})')".format(
-                            '/'.join(tmpdir.split(os.sep)), format, resolution,
-                            nfig),
+                    self.m.interface.call2('eval',
+                        "arrayfun(@(h, i) print(h, sprintf('{}/%i', i), '-d{}', '-r{}'),get(0, 'children'), (1:{})')"
+                                           .format('/'.join(tmpdir.split(os.sep)), format, resolution, nfig),
                         nargout=0)
-                    self.m.interface.eval(
+                    self.m.interface.call2('eval',
                         "arrayfun(@(h) close(h), get(0, 'children'))",
                         nargout=0)
                     for fname in sorted(os.listdir(tmpdir)):
