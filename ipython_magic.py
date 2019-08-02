@@ -40,11 +40,11 @@ class MatlabMagic(Magics):
         if nfig:
             with TemporaryDirectory() as tmpdir:
                 try:
-                    self.m.interface.call2('eval',
+                    self.m.interface.callObj('eval',
                         "arrayfun(@(h, i) print(h, sprintf('{}/%i', i), '-d{}', '-r{}'),get(0, 'children'), (1:{})')"
                                            .format('/'.join(tmpdir.split(os.sep)), format, resolution, nfig),
                         nargout=0)
-                    self.m.interface.call2('eval',
+                    self.m.interface.callObj('eval',
                         "arrayfun(@(h) close(h), get(0, 'children'))",
                         nargout=0)
                     for fname in sorted(os.listdir(tmpdir)):

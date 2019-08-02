@@ -1,9 +1,14 @@
 from pySpinW import Matlab
 
-m = Matlab()
+m = Matlab('/MATLAB/MATLAB_Runtime/v96/')
 
 # Test calling a function
 hkl = m.sw_qscan(([0, 0, 0], [1, 1, 0], 500))
+
+# Test multiple returns
+a, b = m.sw_mirror([0.1, 0, 0])
+c = m.sw_mirror([0.1, 0, 0])
+_, d = m.sw_mirror([0.1, 0, 0])
 
 # Test call class
 s = m.spinw()
@@ -14,7 +19,8 @@ print(s.abc())
 s.genlattice('lat_const', [3, 8, 8], 'angled', [90, 90, 90])
 s.addatom('r', [0, 0, 0], label='MCu2')
 s.plot()
-# Generate a model
+
+# Test model generation
 af = m.sw_model('squareAF', 1.)
 # Do a calculation
 spec = af.spinwave(([0, 0, 0], [1, 1, 0], 500))
